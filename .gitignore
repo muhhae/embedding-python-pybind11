@@ -1,5 +1,7 @@
 /**.sln
 /**.vcxproj
-bin/**
-obj/**
+bin/Debug
+obj/Debug
+bin/Release
+obj/Release
 .vscode
