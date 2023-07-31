@@ -1,16 +1,39 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <iostream>
+#include <map>
+#include <memory>
 
 #include "Pet/Pet.hpp"
 #include "Entity/Entity.hpp"
 #include "Component/Transform.hpp"
+
 
 namespace py = pybind11;
 
 int add(int i, int j) {
     return i + j;
 }
+
+class Game
+{
+    private:
+        std::map<std::string, std::unique_ptr<nty::Entity>> m_entities;
+    public:
+        Game() {}
+        ~Game() {}
+
+        void addEntity(std::string name, nty::Entity* entity)
+        {
+            m_entities[name] = std::make_unique<nty::Entity>(std::move(*entity));
+        }
+
+        std::reference_wrapper<nty::Entity> getEntity(std::string name)
+        {
+            return *m_entities[name];
+        }
+
+};
 
 PYBIND11_MODULE(App, m) {
     m.doc() = "pybind11 App plugin"; // optional module docstring
@@ -68,5 +91,10 @@ PYBIND11_MODULE(App, m) {
         .def("existTransform", &nty::Entity::exist<Transform>)
         .def("existColor", &nty::Entity::exist<Color>)
         .def("existClassColor", &nty::Entity::exist<ClassColor>);
+
+    py::class_<Game>(m, "Game")
+        .def(py::init<>())
+        .def("addEntity", &Game::addEntity)
+        .def("getEntity", &Game::getEntity);
 }
 
