@@ -1,0 +1,3 @@
+[submodule "External/entity-component-system"]
+	path = External/entity-component-system
+	url = https://github.com/muhhae/entity-component-system

@@ -13,7 +13,8 @@ project "interpreter"
 
     includedirs {
         "D:/Other/Python/include",
-        "D:/vcpkg/installed/x64-windows/include"
+        "D:/vcpkg/installed/x64-windows/include",
+        "External/entity-component-system/include"
     }
 
     links {
@@ -45,7 +46,8 @@ project "App"
 
     includedirs {
         "D:/Other/Python/include",
-        "D:/vcpkg/installed/x64-windows/include"
+        "D:/vcpkg/installed/x64-windows/include",
+        "External/entity-component-system/include"
     }
 
     links {
