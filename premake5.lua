@@ -25,7 +25,11 @@ project "interpreter"
     objdir "obj/%{cfg.buildcfg}"
 
     files {
-        "src/interpreter.cpp"
+        "src/**.cpp"
+    }
+
+    removefiles {
+        "src/App.cpp"
     }
 
     filter "configurations:Debug"
@@ -47,7 +51,8 @@ project "App"
     includedirs {
         "D:/Other/Python/include",
         "D:/vcpkg/installed/x64-windows/include",
-        "External/entity-component-system/include"
+        "External/entity-component-system/include",
+        "External/entt/include"
     }
 
     links {

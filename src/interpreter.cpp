@@ -1,10 +1,14 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/embed.h>
 #include <pybind11/stl.h>
+#include <pybind11/stl_bind.h>
 
 #include <iostream>
 
 #include "Pet/Pet.hpp"
+#include "Game/Game.hpp"
+#include "Entity/Entity.hpp"
+#include "Component/Transform.hpp"
 
 namespace py = pybind11;
 
@@ -15,7 +19,7 @@ Pet getTesPet()
     return Pet("DOGGY");
 }
 
-int main()
+void basicValueModification()
 {
     py::scoped_interpreter guard{};
 
@@ -68,6 +72,44 @@ int main()
     {
         std::cerr << e.what() << std::endl;
     }
+}
+
+void gameSystem()
+{
+    try 
+    {
+        py::scoped_interpreter guard{};
+
+        Game game = Game();
+
+        game.addEntity("Player", new nty::Entity());
+
+        py::module_ playerScript = py::module_::import("player");
+        auto playerController = playerScript.attr("PlayerController")(std::ref(game));
+
+        std::cout << "CPP : playerExistColor : " << game.getEntity("Player").get().exist<Color>() << std::endl;
+        std::cout << "CPP : playerExistTransform : " << game.getEntity("Player").get().exist<Transform>() << std::endl;
+
+        playerController.attr("OnUpdate")();
+
+        std::cout << "CPP : playerExistColor : " << game.getEntity("Player").get().exist<Color>() << std::endl;
+        std::cout << "CPP : playerExistTransform : " << game.getEntity("Player").get().exist<Transform>() << std::endl;
+
+        std::cout << "size:" << game.getEntity("Player").get().getList<Transform>().get().size() << std::endl;
+
+        std::cout << "END" << std::endl;
+    }
+    catch (std::exception& e)
+    {
+        std::cerr<< e.what() << std::endl;
+    }
+}
+
+int main()
+{
+    // basicValueModification();
+    gameSystem();
+    // enttGameSystem();
     
     return 0;
 }

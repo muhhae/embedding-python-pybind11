@@ -7,6 +7,8 @@
 #include "Pet/Pet.hpp"
 #include "Entity/Entity.hpp"
 #include "Component/Transform.hpp"
+#include "Game/Game.hpp"
+#include "Game/enttGame.hpp"
 
 
 namespace py = pybind11;
@@ -14,26 +16,6 @@ namespace py = pybind11;
 int add(int i, int j) {
     return i + j;
 }
-
-class Game
-{
-    private:
-        std::map<std::string, std::unique_ptr<nty::Entity>> m_entities;
-    public:
-        Game() {}
-        ~Game() {}
-
-        void addEntity(std::string name, nty::Entity* entity)
-        {
-            m_entities[name] = std::make_unique<nty::Entity>(std::move(*entity));
-        }
-
-        std::reference_wrapper<nty::Entity> getEntity(std::string name)
-        {
-            return *m_entities[name];
-        }
-
-};
 
 PYBIND11_MODULE(App, m) {
     m.doc() = "pybind11 App plugin"; // optional module docstring
@@ -82,6 +64,9 @@ PYBIND11_MODULE(App, m) {
 
     py::class_<nty::Entity>(m, "Entity")
         .def(py::init<>())
+        .def_static("getListTransform", &nty::Entity::getList<Transform>)
+        .def_static("getListColor", &nty::Entity::getList<Color>)
+        .def_static("getListClassColor", &nty::Entity::getList<ClassColor>)
         .def("getTransform", &nty::Entity::get<Transform>)
         .def("getColor", &nty::Entity::get<Color>)
         .def("getClassColor", &nty::Entity::get<ClassColor>)
@@ -96,5 +81,7 @@ PYBIND11_MODULE(App, m) {
         .def(py::init<>())
         .def("addEntity", &Game::addEntity)
         .def("getEntity", &Game::getEntity);
+
+
 }
 
